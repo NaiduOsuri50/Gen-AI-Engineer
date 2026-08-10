@@ -320,3 +320,46 @@ The output when temperature is 0.1
 The output when temperature is 0.5
 The output when temperature is 0.9
 The complete content of your current model_config.py
+
+
+
+Why these test values matter
+
+We are not testing random temperatures. We are testing boundaries:
+
+0.0: lowest accepted value
+0.3: final deterministic value
+0.31: immediately inside balanced
+0.7: final balanced value
+0.71: immediately inside creative
+2.0: highest accepted value
+2.01: first invalid example above the limit
+
+This is called boundary-value testing. Defects frequently occur at transitions such as < versus <=.
+
+Remaining engineering questions
+
+Answer briefly in your own words:
+
+Why is temperature 0.9 unsuitable for strict JSON extraction?
+Ans:High temperature increases sampling randomness (entropy), leading the model to select less probable tokens. For structured data like JSON, this frequently introduces syntax errors (unclosed quotes, trailing commas) or schema mismatches. Extraction requires deterministic, low-temperature settings (0.0 to 0.2) to ensure strict format adherence.
+Why store generation parameters in one configuration object?
+Ans:It encapsulates parameter validation at initialization (preventing runtime type/value errors downstream), simplifies function signatures across the codebase, ensures repeatable configurations, and allows clean serialization (to_dict()) for experiment logging and tracking.
+Why should an experiment change only one model parameter at a time?
+Ans:To isolate variables and establish clear causality. If you adjust multiple parameters simultaneously (e.g., lowering temperature while shrinking top_p), you cannot isolate which specific parameter caused a change in output quality, diversity, or length.
+Why does max_output_tokens not solve the entire context-window problem?
+Ans:max_output_tokens only caps the length of the generated response (completion). A model's context window encompasses both the input prompt and the output response combined. If an oversized prompt fills the context window, the model will fail or truncate context before max_output_tokens even comes into play.
+
+Submit the test output and four answers. Then Day 2 is complete.
+test_above_point_seven_is_creative (test_model_config.TestGenerationConfig.test_above_point_seven_is_creative) ... ok
+test_above_point_three_is_balanced (test_model_config.TestGenerationConfig.test_above_point_three_is_balanced) ... ok
+test_point_seven_is_balanced (test_model_config.TestGenerationConfig.test_point_seven_is_balanced) ... ok
+test_point_three_is_deterministic (test_model_config.TestGenerationConfig.test_point_three_is_deterministic) ... ok
+test_temperature_above_two_is_rejected (test_model_config.TestGenerationConfig.test_temperature_above_two_is_rejected) ... ok
+test_two_is_creative (test_model_config.TestGenerationConfig.test_two_is_creative) ... ok
+test_zero_temperature_is_deterministic (test_model_config.TestGenerationConfig.test_zero_temperature_is_deterministic) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.003s
+
+OK
