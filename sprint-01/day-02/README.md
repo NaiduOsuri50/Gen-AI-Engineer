@@ -342,15 +342,19 @@ Remaining engineering questions
 AAnswer briefly in your own words:
 
 Q1.Why is temperature 0.9 unsuitable for strict JSON extraction?
+
 Ans:High temperature increases sampling randomness (entropy), leading the model to select less probable tokens. For structured data like JSON, this frequently introduces syntax errors (unclosed quotes, trailing commas) or schema mismatches. Extraction requires deterministic, low-temperature settings (0.0 to 0.2) to ensure strict format adherence.
 
 Q2.Why store generation parameters in one configuration object?
+
 Ans:It encapsulates parameter validation at initialization (preventing runtime type/value errors downstream), simplifies function signatures across the codebase, ensures repeatable configurations, and allows clean serialization (to_dict()) for experiment logging and tracking.
 
 Q3.Why should an experiment change only one model parameter at a time?
+
 Ans:To isolate variables and establish clear causality. If you adjust multiple parameters simultaneously (e.g., lowering temperature while shrinking top_p), you cannot isolate which specific parameter caused a change in output quality, diversity, or length.
 
 Q4.Why does max_output_tokens not solve the entire context-window problem?
+
 Ans:max_output_tokens only caps the length of the generated response (completion). A model's context window encompasses both the input prompt and the output response combined. If an oversized prompt fills the context window, the model will fail or truncate context before max_output_tokens even comes into play.
 
 Submit the test output and four answers. Then Day 2 is complete.
