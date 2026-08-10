@@ -1,0 +1,18 @@
+[
+  {
+    "role": "system",
+    "content": "You are a concise Python tutor."
+  },
+  {
+    "role": "user",
+    "content": "What is the difference between an LLM and a chatbot?"
+  },
+  {
+    "role": "assistant",
+    "content": "An LLM generates output. A chatbot is an application that manages the model, prompts, state, safety, and interface."
+  },
+  {
+    "role": "user",
+    "content": "Who owns the conversation history?"
+  }
+]
